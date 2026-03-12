@@ -10,6 +10,7 @@ const prenom = req.query.prenom || "Prenom";
 const naissance = req.query.naissance || "Date";
 const lieu = req.query.lieu || "Lieu";
 const nationalite = req.query.nationalite || "Nationalite";
+const photo = req.query.photo;
 
 const canvas = createCanvas(800, 500);
 const ctx = canvas.getContext('2d');
@@ -31,6 +32,11 @@ ctx.fillText(id.toString(), 380, 300);
 
 ctx.font = "26px cursive";
 ctx.fillText(prenom + " " + nom, 540, 365);
+
+if(photo){
+const avatar = await loadImage(photo);
+ctx.drawImage(avatar, 70, 140, 150, 180);
+}
 
 const buffer = canvas.toBuffer("image/png");
 
