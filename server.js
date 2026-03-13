@@ -2,16 +2,16 @@ const express = require("express");
 const { createCanvas, loadImage } = require("canvas");
 
 const app = express();
+const PORT = process.env.PORT || 3000;
 
 app.get("/carte", async (req, res) => {
   try {
 
-    const nom = req.query.nom || "Nom";
-    const prenom = req.query.prenom || "Prenom";
-    const naissance = req.query.naissance || "01/01/2000";
-    const lieu = req.query.lieu || "Ville";
-    const nationalite = req.query.nationalite || "Nationalite";
-    const photo = req.query.photo;
+    const nom = req.query.nom || "...";
+    const prenom = req.query.prenom || "...";
+    const naissance = req.query.naissance || "...";
+    const lieu = req.query.lieu || "...";
+    const nationalite = req.query.nationalite || "...";
 
     const canvas = createCanvas(800, 500);
     const ctx = canvas.getContext("2d");
@@ -38,16 +38,6 @@ app.get("/carte", async (req, res) => {
     ctx.font = "22px cursive";
     ctx.fillText(prenom + " " + nom, 540, 400);
 
-    // photo joueur
-   try {
-    if (photo && photo.startsWith("http")) {
-        const avatar = await loadImage(photo);
-        ctx.drawImage(avatar, 80, 130, 130, 150);
-    }
-} catch (err) {
-    console.log("Erreur chargement photo :", err.message);
-}
-
     res.setHeader("Content-Type", "image/png");
     res.send(canvas.toBuffer());
 
@@ -57,4 +47,6 @@ app.get("/carte", async (req, res) => {
   }
 });
 
-module.exports = app;
+app.listen(PORT, () => {
+  console.log(`Serveur lancé sur le port ${PORT}`);
+});
