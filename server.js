@@ -4,22 +4,26 @@ module.exports = (app) => {
 
 app.get("/carte", async (req, res) => {
 
+res.setHeader("Content-Type", "image/png");
+
 try {
 
+// récupérer les paramètres
 const nom = req.query.nom || "...";
 const prenom = req.query.prenom || "...";
 const naissance = req.query.naissance || "...";
 const lieu = req.query.lieu || "...";
 const nationalite = req.query.nationalite || "...";
 
+// créer canvas
 const canvas = createCanvas(800, 500);
 const ctx = canvas.getContext("2d");
 
-// background carte
+// charger le template
 const background = await loadImage("./template.png");
 ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
 
-// texte
+// texte carte
 ctx.font = "20px Arial";
 ctx.fillStyle = "black";
 
@@ -37,8 +41,8 @@ ctx.fillText(idCarte, 380, 300);
 ctx.font = "22px cursive";
 ctx.fillText(prenom + " " + nom, 540, 400);
 
-res.setHeader("Content-Type", "image/png");
-res.send(canvas.toBuffer());
+// envoyer image
+res.end(canvas.toBuffer());
 
 } catch (err) {
 
