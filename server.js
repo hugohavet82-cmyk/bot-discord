@@ -1,52 +1,52 @@
-const express = require("express");
 const { createCanvas, loadImage } = require("canvas");
 
-const app = express();
-const PORT = process.env.PORT || 3000;
+module.exports = (app) => {
 
 app.get("/carte", async (req, res) => {
-  try {
 
-    const nom = req.query.nom || "...";
-    const prenom = req.query.prenom || "...";
-    const naissance = req.query.naissance || "...";
-    const lieu = req.query.lieu || "...";
-    const nationalite = req.query.nationalite || "...";
+try {
 
-    const canvas = createCanvas(800, 500);
-    const ctx = canvas.getContext("2d");
+const nom = req.query.nom || "...";
+const prenom = req.query.prenom || "...";
+const naissance = req.query.naissance || "...";
+const lieu = req.query.lieu || "...";
+const nationalite = req.query.nationalite || "...";
 
-    // background carte
-    const background = await loadImage("./template.png");
-    ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+const canvas = createCanvas(800, 500);
+const ctx = canvas.getContext("2d");
 
-    // texte
-    ctx.font = "20px Arial";
-    ctx.fillStyle = "black";
+// background carte
+const background = await loadImage("./template.png");
+ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
 
-    ctx.fillText(nom, 380, 140);
-    ctx.fillText(prenom, 380, 172);
-    ctx.fillText(naissance, 380, 204);
-    ctx.fillText(lieu, 380, 236);
-    ctx.fillText(nationalite, 380, 268);
+// texte
+ctx.font = "20px Arial";
+ctx.fillStyle = "black";
 
-    // génération ID carte
-    const idCarte = Math.floor(100000 + Math.random() * 900000);
-    ctx.fillText(idCarte, 380, 300);
+ctx.fillText(nom, 380, 140);
+ctx.fillText(prenom, 380, 172);
+ctx.fillText(naissance, 380, 204);
+ctx.fillText(lieu, 380, 236);
+ctx.fillText(nationalite, 380, 268);
 
-    // signature
-    ctx.font = "22px cursive";
-    ctx.fillText(prenom + " " + nom, 540, 400);
+// génération ID carte
+const idCarte = Math.floor(100000 + Math.random() * 900000);
+ctx.fillText(idCarte, 380, 300);
 
-    res.setHeader("Content-Type", "image/png");
-    res.send(canvas.toBuffer());
+// signature
+ctx.font = "22px cursive";
+ctx.fillText(prenom + " " + nom, 540, 400);
 
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("Erreur génération carte");
-  }
+res.setHeader("Content-Type", "image/png");
+res.send(canvas.toBuffer());
+
+} catch (err) {
+
+console.error(err);
+res.status(500).send("Erreur génération carte");
+
+}
+
 });
 
-app.listen(PORT, () => {
-  console.log(`Serveur lancé sur le port ${PORT}`);
-});
+};
