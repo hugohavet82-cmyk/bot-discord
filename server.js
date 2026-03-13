@@ -1,50 +1,48 @@
-const express = require('express');
-const { createCanvas, loadImage } = require('canvas');
+const express = require("express");
+const { createCanvas, loadImage } = require("canvas");
 
 const app = express();
 
-app.get('/carte', async (req, res) => {
+app.get("/carte", async (req, res) => {
+  try {
 
-const nom = req.query.nom || "Nom";
-const prenom = req.query.prenom || "Prenom";
-const naissance = req.query.naissance || "Date";
-const lieu = req.query.lieu || "Lieu";
-const nationalite = req.query.nationalite || "Nationalite";
-const photo = req.query.photo;
+    const nom = req.query.nom || "Nom";
+    const prenom = req.query.prenom || "Prenom";
+    const naissance = req.query.naissance || "Date";
+    const lieu = req.query.lieu || "Lieu";
+    const nationalite = req.query.nationalite || "Nationalite";
+    const photo = req.query.photo;
 
-const canvas = createCanvas(800, 500);
-const ctx = canvas.getContext('2d');
+    const canvas = createCanvas(800, 500);
+    const ctx = canvas.getContext("2d");
 
-const template = await loadImage('./template.png');
-ctx.drawImage(template, 0, 0, 800, 500);
+    // background carte
+    const background = await loadImage("./template.png");
+    ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
 
-const id = Math.floor(Math.random() * 900000 + 100000);
+    // texte
+    ctx.font = "20px Arial";
+    ctx.fillStyle = "black";
 
-ctx.fillStyle = "#1a1a1a";
-ctx.font = "22px Arial";
+    ctx.fillText(nom, 350, 200);
+    ctx.fillText(prenom, 350, 240);
+    ctx.fillText(naissance, 350, 280);
+    ctx.fillText(lieu, 350, 320);
+    ctx.fillText(nationalite, 350, 360);
 
-ctx.fillText(nom, 380, 140);
-ctx.fillText(prenom, 380, 172);
-ctx.fillText(naissance, 380, 204);
-ctx.fillText(lieu, 380, 236);
-ctx.fillText(nationalite, 380, 268);
-ctx.fillText(id.toString(), 380, 300);
+    // photo joueur
+    if (photo && photo.startsWith("http")) {
+      const avatar = await loadImage(photo);
+      ctx.drawImage(avatar, 80, 150, 150, 180);
+    }
 
-ctx.font = "26px cursive";
-ctx.fillText(prenom + " " + nom, 540, 365);
+    res.setHeader("Content-Type", "image/png");
+    res.send(canvas.toBuffer());
 
-if(photo){
-const avatar = await loadImage(photo);
-ctx.drawImage(avatar, 70, 140, 150, 180);
-}
-
-const buffer = canvas.toBuffer("image/png");
-
-res.set("Content-Type", "image/png");
-res.send(buffer);
-
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Erreur génération carte");
+  }
 });
 
-app.listen(3000, () => {
-console.log("Serveur lancé sur http://localhost:3000");
-});
+module.exports = app;
