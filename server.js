@@ -39,10 +39,14 @@ app.get("/carte", async (req, res) => {
     ctx.fillText(prenom + " " + nom, 540, 400);
 
     // photo joueur
+   try {
     if (photo && photo.startsWith("http")) {
-      const avatar = await loadImage(photo);
-      ctx.drawImage(avatar, 70, 130, 130, 150);
+        const avatar = await loadImage(photo);
+        ctx.drawImage(avatar, 80, 130, 130, 150);
     }
+} catch (err) {
+    console.log("Erreur chargement photo :", err.message);
+}
 
     res.setHeader("Content-Type", "image/png");
     res.send(canvas.toBuffer());
